@@ -1,4 +1,3 @@
-```
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* -------------------------
+           ORIGINAL STYLES (kept)
+           ------------------------- */
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
@@ -121,7 +123,7 @@
                 opacity: 0;
             }
         }
-
+    
         .equalizer {
             display: flex;
             align-items: end;
@@ -207,7 +209,7 @@
             25% { transform: translateY(-10px) rotate(5deg); }
             75% { transform: translateY(-5px) rotate(-5deg); }
         }
-
+    
         /* Anime/Japanese Elements */
         .sakura {
             position: absolute;
@@ -254,9 +256,104 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
+
+        /* -------------------------
+           NEW: full-width strip, chibi avatar fixed, bubble styles
+           ------------------------- */
+        .full-pink-strip {
+            width: 100vw;
+            height: 70px;
+            margin-top: 18px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #ff9acb, #ff6ab6);
+            box-shadow: 0 8px 28px rgba(255,105,180,0.14);
+            /* center while inside container */
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+        }
+
+        .chibi-fixed {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.95);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+            z-index: 1400;
+            background: #fff;
+        }
+        .chibi-fixed img { width: 100%; height: 100%; object-fit: cover; display:block; }
+
+        /* bubble container (horizontal, outside the message card) */
+        #outsideChat {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: flex-start;
+            align-items: flex-end;
+            max-width: 1100px;
+            margin: 18px auto 36px;
+            padding: 6px 14px;
+            z-index: 900;
+        }
+
+        .bubble {
+            opacity: 0;
+            transform: translateY(8px) scale(0.94);
+            padding: 10px 18px;
+            border-radius: 999px;
+            color: #fff;
+            position: relative;
+            line-height: 1.2;
+            max-width: 320px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+            backdrop-filter: blur(4px);
+        }
+        .bubble::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            bottom: -6px;
+            left: 18px;
+            background: inherit;
+            transform: rotate(45deg);
+            box-shadow: inherit;
+        }
+        .bubble.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: transform 360ms cubic-bezier(.2,.9,.3,1), opacity 300ms ease;
+        }
+
+        .bubble.pink { background: linear-gradient(90deg,#ff91c1,#ff6aa3); }
+        .bubble.purple { background: linear-gradient(90deg,#b99cff,#8f6bff); }
+        .bubble.indigo { background: linear-gradient(90deg,#7c86ff,#6366f1); }
+        .bubble.fuchsia { background: linear-gradient(90deg,#d07cf9,#d946ef); }
+        .bubble.rose { background: linear-gradient(90deg,#ff7fa3,#fb7185); }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7) translateY(12px); opacity: 0; }
+            60% { transform: scale(1.06) translateY(-6px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            .bubble { max-width: 78%; padding: 10px 14px; }
+            .chibi-fixed { width: 48px; height: 48px; top: 10px; right: 10px; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center">
+
+    <!-- Chibi avatar fixed (always visible) -->
+    <div class="chibi-fixed" aria-hidden="false" title="Chibi Avatar">
+        <img src="3BOC-removebg-preview.png" alt="chibi avatar">
+    </div>
+
     <!-- Floating Elements Background -->
     <div class="floating-hearts" id="hearts"></div>
     <div class="sakura-fall-container" id="sakuraContainer"></div>
@@ -265,52 +362,55 @@
     <div class="container mx-auto px-4 py-12">
         <!-- Hero Section -->
         <div class="text-center mb-16 relative">
-            <!-- Anime Character -->
+            <!-- Anime Character (kept) -->
             <div class="anime-character absolute top-10 right-10 hidden md:block">
                 <img src="" width="20%" height="20%"/>
-                      
             </div>
-            
+
             <div class="flex justify-center mb-6">
                 <div class="candle mx-2"></div>
                 <div class="candle mx-2"></div>
                 <div class="candle mx-2"></div>
             </div>
-            
+
             <h1 class="hero-title text-6xl md:text-8xl font-bold mb-6 text-white">
                 To the man who turns my ordinary days into poetry
             </h1>
-            <h2 class="text-4xl md:text-6xl font-bold romantic-accent bg-clip-text text-transparent mb-8">
-                Erlangga Rifana
-            </h2>
+
+            <!-- FULL WIDTH PINK STRIP (right under H1, spans full viewport) -->
+            <div class="full-pink-strip" aria-hidden="true"></div>
+
+            <!-- NOTE: 'Erlangga Rifana' H2 REMOVED per request -->
+
             <p class="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
-                yang kukenal sebagai mahakarya Tuhan nyaris sempurna, kemudian semesta mengenal ia sebagai Erlangga Rifana, 
+                yang kukenal sebagai mahakarya Tuhan nyaris sempurna, kemudian semesta mengenal ia sebagai Erlangga Rifana
             </p>
         </div>
 
         <!-- Birthday Message (Moved Above Gallery) -->
-        <div class="birthday-card rounded-xl p-8 text-center max-w-4xl mx-auto mb-16 relative">
+        <div class="birthday-card rounded-xl p-8 text-center max-w-4xl mx-auto mb-8 relative">
             <!-- Japanese Decorative Text -->
             <div class="japanese-text absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-400 text-sm hidden md:block">
                 I<br>LOVE<br>YOU
             </div>
-            
+
             <div class="romantic-accent w-20 h-1 mx-auto mb-6 rounded-full"></div>
             <h2 class="text-3xl font-bold mb-6 kawaii-element"> Hope you're happy </h2>
             <p class="text-lg text-gray-300 leading-relaxed mb-4">
-                おめでとう! Wkwk, SERIUS GAA KAMU 21+??? Aku gatau nii yang udah kamu lewatin apa aja sejauh ini, wlw gimanapun itu pasti hal yg ngebentuk Erlangga Rifana yang aku liat skrg ini, kan? Mulai dari entah kapan pokoknya, aku kyk pengen bisa ngasih kamu banyak-banyak hal baik yang bermakna, sehingga itu akan membentuk kamu yang jauh lebih bijak lagi kedepannya. (ganteng bonus)
+                おめでとう! Wkwk, SERIUS GAA KAMU 21+??? Aku gatau yang udah kamu lewatin apa aja sejauh ini, wlw gimanapun itu pasti hal yg ngebentuk Erlangga Rifana yang aku liat skrg ini, kan? Mulai dari entah kapan pokoknya, aku kyk pengen bisa ngasih kamu banyak-banyak hal baik, sehingga itu akan membentuk kamu yang jauh lebih bijak lagi kedepannya. (ganteng bonus)
                 Tapi, manusia itu dinamis, kan, btw? Hehe, jadi aku ga mau banyak janji-janji kek yg aneh atau crinjjj gitu, TAPI TAPI TAPII ... aku gmw bgt bikin kamu SEDIKIT AJA ngerasain nyesel krn udah ketemu aku dan milih aku diantara banyak pilihan yg tersedia di depan mata kamu, termasuk memilih untuk tinggal dan ngsih aku kesempatan untuk mengenal kamu lbh jauh, thank you ...
-        
             </p>
             <p class="text-lg text-gray-300 leading-relaxed mb-4">
-                Kalau kamu punya harapan atau keinginan aku ikut doain jg yh semoga bisa segera tercapai, termasuk yang ke مدينة itu. Aku ga tau posisi atau makna kehadiran aku di hidup km ini seperti apa atau gimana, aku ga mau melewati batas dari yang udah kamu toleransi ke aku, aku serahin semua ke kamu dan the power of TIME, wkwk, entah berapa lama waktu yang bisa aku rayu biar bisa luluhin kamu, awowkwok. 
-                LOAAAAFFFFFFFGGGYUUUUUUU.
+                Kalau kamu punya harapan atau keinginan aku ikut doain jg yh semoga bisa segera tercapai, termasuk yang ke مدينة itu. Aku ga tau posisi atau makna kehadiran aku di hidup km ini seperti apa atau gimana, aku ga mau melewati batas dari yang udah kamu toleransi ke aku, aku serahin semua ke kamu dan the power of TIME, wkwk, entah berapa lama waktu yang bisa aku rayu biar bisa luluhin kamu, awowkwok.
             </p>
             <div class="romantic-accent w-20 h-1 mx-auto mt-6 rounded-full"></div>
-            
+
             <!-- Kawaii Decoration -->
             <div class="absolute bottom-4 right-4 text-2xl kawaii-element">✨</div>
         </div>
+
+        <!-- OUTSIDE: Bubble chat container (horizontal, after the "Hope you're happy" card, before gallery) -->
+        <div id="outsideChat" aria-live="polite" aria-atomic="true"></div>
 
         <!-- Gallery Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
@@ -347,7 +447,7 @@
                     src="nonton1.jpg" 
                     alt="" 
                     class="w-full h-64 object-cover rounded-lg mb-4"
-                    onerror="this.src="
+                    onerror="this.src='https://placehold.co/400x500/1a1a1a/ffffff?text=Nonton+Bareng'"
                 >
                 <h3 class="text-xl font-semibold mb-2">🎬 1000X nonton bareng</h3>
                 <p class="text-gray-400">kadang-kadang aku ga terlalu suka filmnya, cuma asik aja bisa ngobrol/denger kamu ketawa.</p>
@@ -362,7 +462,7 @@
                     onerror="this.src='https://placehold.co/400x500/1a1a1a/ffffff?text=Keindahan'"
                 >
                 <h3 class="text-xl font-semibold mb-2">📞 CALL RIBET, SERUMAH AJA GA SI??tapi kita sama-sama msh kecil, hm, nanti aja deh</h3>
-                <p class="text-gray-400">Dc 24/7 itu hanyalah propaganda, kamu sebnrnya SENGAJA ya, kaya ganja buat orang Amerika? bikin kecanduan.</p>
+                <p class="text-gray-400">Dc 24/7 itu hanyalah propaganda dan pengalihan isu, aku tau kamu sebnrnya SENGAJA kan, kaya cannabis sativa yg buat orang Amerika tu? adiktif parah banhh ga kuatt</p>
             </div>
         </div>
 
@@ -487,7 +587,9 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-        // Audio player setup
+        // ---------------------------
+        // Original JS (preserved)
+        // ---------------------------
         const audioPlayer = document.getElementById('audioPlayer');
         const playIcon = document.getElementById('playIcon');
         const vinylRecord = document.getElementById('vinylRecord');
@@ -521,57 +623,58 @@
         let currentSongIndex = 0;
         let isPlaying = false;
         let equalizerInterval;
-
+    
         function togglePlay() {
             if (isPlaying) {
                 audioPlayer.pause();
-                playIcon.className = "fas fa-play";
-                vinylRecord.classList.remove('playing');
+                if (playIcon) playIcon.className = "fas fa-play";
+                if (vinylRecord) vinylRecord.classList.remove('playing');
                 stopEqualizer();
             } else {
                 if (audioPlayer.src === "") {
                     playSong(0);
                 } else {
                     audioPlayer.play();
-                    playIcon.className = "fas fa-pause";
-                    vinylRecord.classList.add('playing');
+                    if (playIcon) playIcon.className = "fas fa-pause";
+                    if (vinylRecord) vinylRecord.classList.add('playing');
                     startEqualizer();
                 }
             }
             isPlaying = !isPlaying;
         }
-
+    
         function playSong(index) {
             currentSongIndex = index;
             const song = songs[index];
             audioPlayer.src = song.src;
             audioPlayer.play();
-            currentSong.textContent = song.title;
-            currentArtist.textContent = song.artist;
-            playIcon.className = "fas fa-pause";
-            vinylRecord.classList.add('playing');
+            if (currentSong) currentSong.textContent = song.title;
+            if (currentArtist) currentArtist.textContent = song.artist;
+            if (playIcon) playIcon.className = "fas fa-pause";
+            if (vinylRecord) vinylRecord.classList.add('playing');
             isPlaying = true;
             startEqualizer();
             createMusicNotes();
             createSakura(); // Add sakura effect when music plays
         }
-
+    
         function nextSong() {
             currentSongIndex = (currentSongIndex + 1) % songs.length;
             playSong(currentSongIndex);
         }
-
+    
         function previousSong() {
             currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
             playSong(currentSongIndex);
         }
-
+    
         function changeVolume(volume) {
             audioPlayer.volume = volume;
         }
-
+    
         function startEqualizer() {
             stopEqualizer();
+            if (!equalizer) return;
             equalizerInterval = setInterval(() => {
                 const bars = equalizer.querySelectorAll('.bar');
                 bars.forEach(bar => {
@@ -580,11 +683,11 @@
                 });
             }, 100);
         }
-
+    
         function stopEqualizer() {
             clearInterval(equalizerInterval);
         }
-
+    
         function createMusicNotes() {
             for (let i = 0; i < 10; i++) {
                 const note = document.createElement('div');
@@ -592,16 +695,18 @@
                 note.innerHTML = Math.random() > 0.5 ? '🎵' : '🎶';
                 note.style.left = Math.random() * 100 + '%';
                 note.style.animationDelay = Math.random() * 2 + 's';
-                document.querySelector('.vinyl').appendChild(note);
+                const vinyl = document.querySelector('.vinyl');
+                if (vinyl) vinyl.appendChild(note);
                 
                 setTimeout(() => {
                     note.remove();
                 }, 4000);
             }
         }
-
+    
         function createSakura() {
             const container = document.getElementById('sakuraContainer');
+            if (!container) return;
             for (let i = 0; i < 15; i++) {
                 const sakura = document.createElement('div');
                 sakura.className = 'sakura';
@@ -616,9 +721,10 @@
                 }, 8000);
             }
         }
-
+    
         function createHearts() {
             const heartsContainer = document.getElementById('hearts');
+            if (!heartsContainer) return;
             const hearts = 30;
             
             for (let i = 0; i < hearts; i++) {
@@ -630,7 +736,7 @@
                 heartsContainer.appendChild(heart);
             }
         }
-
+    
         function createConfetti() {
             const colors = ['#ff69b4', '#ff1493', '#ff6b35', '#ff8c42', '#ffb142'];
             
@@ -648,7 +754,7 @@
             }
             createSakura(); // Also create sakura when confetti is triggered
         }
-
+    
         function surpriseDance() {
             // Make everything dance!
             const elements = document.querySelectorAll('h1, h2, h3, .gallery-item, button');
@@ -663,14 +769,87 @@
             playSong(Math.floor(Math.random() * songs.length));
         }
 
-        // Initialize
+        // ---------------------------
+        // NEW JS: bubble pop sound + horizontal bubbles (placed after message)
+        // ---------------------------
+        function createPopSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                return function() {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(950, ctx.currentTime);
+                    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.005);
+                    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+                    o.connect(g); g.connect(ctx.destination);
+                    o.start(ctx.currentTime);
+                    o.stop(ctx.currentTime + 0.12);
+                };
+            } catch (e) {
+                return function(){};
+            }
+        }
+
+        function generateOutsideBubbles() {
+            const messages = [
+                { text: 'Banyakkin minum air putih, Gaa!', cls: 'pink' },
+                { text: 'Kalau mau keluar rumah harus safety, hati-hati pokoknya, bawa jas ujan jangan lupa', cls: 'purple' },
+                { text: '🌙 Istirahat yang cukup', cls: 'indigo' },
+                { text: 'Sayang eta sama uja, dan keluarga', cls: 'fuchsia' },
+                { text: 'Sayang dea (opsional)', cls: 'rose' }
+            ];
+
+            const container = document.getElementById('outsideChat');
+            if (!container) return;
+            const playPop = createPopSound();
+
+            messages.forEach((m, i) => {
+                const delay = 2000 + i * 1000; // stagger timing
+                setTimeout(() => {
+                    const b = document.createElement('div');
+                    b.className = `bubble ${m.cls}`;
+                    b.textContent = m.text;
+
+                    // slight pop animation and small movement from left
+                    b.style.animation = `popIn 420ms cubic-bezier(.2,.9,.3,1)`;
+                    container.appendChild(b);
+
+                    // show with class (for transition)
+                    requestAnimationFrame(() => {
+                        b.classList.add('show');
+                    });
+
+                    // play pop sound
+                    playPop();
+
+                    // small accessible announce for screen readers
+                    b.setAttribute('role','status');
+                    b.setAttribute('aria-live','polite');
+
+                    // optional: auto-remove bubble after some time (e.g., 9s)
+                    setTimeout(() => {
+                        b.classList.remove('show');
+                        // fade out
+                        b.style.transition = 'opacity 300ms ease, transform 300ms ease';
+                        b.style.opacity = '0';
+                        setTimeout(()=> b.remove(), 400);
+                    }, 3600000);
+                }, delay);
+            });
+        }
+
+        // ---------------------------
+        // INIT
+        // ---------------------------
         document.addEventListener('DOMContentLoaded', function() {
             createHearts();
             createSakura(); // Initial sakura fall
-            
+
             // Event listeners
-            audioPlayer.addEventListener('ended', nextSong);
-            
+            if (audioPlayer) audioPlayer.addEventListener('ended', nextSong);
+
             // Add mouse move effect for gallery items
             document.querySelectorAll('.gallery-item').forEach(item => {
                 item.addEventListener('mousemove', function(e) {
@@ -678,22 +857,24 @@
                     const y = e.offsetY;
                     const centerX = this.offsetWidth / 2;
                     const centerY = this.offsetHeight / 2;
-                    
+
                     const rotateX = (y - centerY) / 10;
                     const rotateY = (centerX - x) / 10;
-                    
+
                     this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
                 });
-                
+
                 item.addEventListener('mouseleave', function() {
                     this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
                 });
             });
-            
+
             // Continuous sakura fall
             setInterval(createSakura, 3000);
+
+            // generate bubbles (after the "Hope you're happy" card)
+            generateOutsideBubbles();
         });
     </script>
 </body>
 </html>
-```
